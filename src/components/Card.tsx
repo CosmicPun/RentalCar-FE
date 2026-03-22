@@ -1,56 +1,49 @@
-"use client";
 import Image from "next/image";
-import Rating from "@mui/material/Rating";
-import { useState } from "react";
 import InteractiveCard from "./InteractiveCard";
 
 export default function Card({
-  venueName,
+  providerName,
   imgSrc,
   onRatingChange,
 }: {
-  venueName: string;
+  providerName: string;
   imgSrc: string;
   onRatingChange?: (rating: number) => void;
 }) {
-  const [rating, setRating] = useState<number | null>(0);
-
-  const handleChange = (_: React.SyntheticEvent, newValue: number | null) => {
-    const val = newValue ?? 0;
-    setRating(val);
-    onRatingChange?.(val);
-  };
-
   return (
-    <InteractiveCard contentName={venueName}>
-      {/* Image */}
-      <div className="w-full h-[60%] relative overflow-hidden bg-gray-200">
+    <InteractiveCard contentName={providerName}>
+      <div className="w-full h-[70%] relative rounded-t-lg overflow-hidden">
         <Image
           src={imgSrc}
-          alt={venueName}
+          alt={providerName}
           fill={true}
-          className="object-cover object-center transition-transform duration-700 ease-in-out group-hover:scale-110"
+          className="object-cover transition-transform duration-500 hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-
-      {/* Text */}
-      <div className="px-5 py-4 flex flex-col justify-between flex-1">
-        <p className="text-base font-bold text-gray-800 tracking-wide line-clamp-2 leading-snug">
-          {venueName}
-        </p>
-
-        {/* Rating — only shown if onRatingChange prop is provided */}
-        {onRatingChange !== undefined && (
-          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
-            <Rating
-              id={`${venueName} Rating`}
-              name={`${venueName} Rating`}
-              data-testid={`${venueName} Rating`}
-              value={rating}
-              onChange={handleChange}
-              size="medium"
-            />
+      <div className="w-full h-[30%] p-[10px] flex flex-col justify-between">
+        <div className="text-gray-800 font-bold text-lg truncate">
+          {providerName}
+        </div>
+        {onRatingChange && (
+          <div
+            className="mt-1"
+            onClick={(e) => e.stopPropagation()} // Prevent card click when clicking rating
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-500">Rate:</span>
+              <div className="flex bg-gray-50 p-1 rounded-md border border-gray-100 shadow-sm">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => onRatingChange(star)}
+                    className="text-gray-300 hover:text-yellow-400 transition-colors px-0.5"
+                    title={`Rate ${star} stars`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

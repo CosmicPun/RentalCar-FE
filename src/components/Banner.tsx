@@ -37,10 +37,10 @@ export default function Banner() {
       
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-white mt-10 pointer-events-none px-4">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight drop-shadow-2xl mb-4 animate-fade-in-up text-center">
-          Your Venue <span className="text-cyan-400">Partner</span>
+          Your Rental <span className="text-cyan-400">Partner</span>
         </h1>
         <h3 className="text-xl md:text-2xl font-light text-gray-200 drop-shadow-lg text-center opacity-90 delay-100 animate-fade-in-up">
-          Find Your Perfect Event Space
+          Find Your Perfect Car for Every Journey
         </h3>
       </div>
 
@@ -48,10 +48,10 @@ export default function Banner() {
         className="bg-white/95 backdrop-blur-sm text-cyan-800 font-bold py-3 px-8 rounded-full shadow-xl z-30 absolute bottom-12 right-12 hover:bg-cyan-600 hover:text-white hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
         onClick={(e) => {
           e.stopPropagation();
-          router.push("/venue");
+          router.push("/provider");
         }}
       >
-        Select Venue
+        Select Provider
       </button>
 
       {session ? (
