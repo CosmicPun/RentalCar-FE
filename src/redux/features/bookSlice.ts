@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LocalBookingItem } from '@/../interface';
 
 export interface BookState {
-  bookItems: BookingItem[];
+  bookItems: LocalBookingItem[];
 }
 
 const initialState: BookState = {
@@ -12,10 +13,10 @@ export const bookSlice = createSlice({
   name: 'book',
   initialState,
   reducers: {
-    addBooking: (state, action: PayloadAction<BookingItem>) => {
-      // Find if a booking for the same venue and date already exists
+    addBooking: (state, action: PayloadAction<LocalBookingItem>) => {
+      // Find if a booking for the same provider and date already exists
       const existingIndex = state.bookItems.findIndex(
-        item => item.venue === action.payload.venue && item.bookDate === action.payload.bookDate
+        item => item.provider === action.payload.provider && item.bookDate === action.payload.bookDate
       );
       
       if (existingIndex !== -1) {
@@ -26,13 +27,13 @@ export const bookSlice = createSlice({
         state.bookItems.push(action.payload);
       }
     },
-    removeBooking: (state, action: PayloadAction<BookingItem>) => {
+    removeBooking: (state, action: PayloadAction<LocalBookingItem>) => {
       // Remove the booking if all fields match exactly
       state.bookItems = state.bookItems.filter(
         item => 
           item.nameLastname !== action.payload.nameLastname ||
           item.tel !== action.payload.tel ||
-          item.venue !== action.payload.venue ||
+          item.provider !== action.payload.provider ||
           item.bookDate !== action.payload.bookDate
       );
     }
