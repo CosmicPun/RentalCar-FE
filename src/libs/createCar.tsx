@@ -1,7 +1,7 @@
 import { CarItem } from "@/../interface";
 
 export default async function createCar(token: string, carData: Partial<CarItem>) {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(`${baseUrl}/cars`, {
     method: "POST",
     headers: {

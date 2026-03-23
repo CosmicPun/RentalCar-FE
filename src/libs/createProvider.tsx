@@ -1,7 +1,7 @@
 import { ProviderItem } from "@/../interface";
 
 export default async function createProvider(token: string, providerData: Partial<ProviderItem>) {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(`${baseUrl}/providers`, {
     method: "POST",
     headers: {

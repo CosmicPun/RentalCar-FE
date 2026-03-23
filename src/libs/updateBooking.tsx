@@ -1,5 +1,5 @@
 export default async function updateBooking(token: string, id: string, bookingDate?: string, returnDate?: string) {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(`${baseUrl}/bookings/${id}`, {
     method: "PUT",
     headers: {

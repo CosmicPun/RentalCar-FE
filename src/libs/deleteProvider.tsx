@@ -1,5 +1,5 @@
 export default async function deleteProvider(token: string, id: string) {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(`${baseUrl}/providers/${id}`, {
     method: "DELETE",
     headers: {

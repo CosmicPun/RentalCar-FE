@@ -1,7 +1,7 @@
 import { BookingJson } from "@/../interface";
 
 export default async function getBookings(token: string): Promise<BookingJson> {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(`${baseUrl}/bookings`, {
     method: "GET",
     headers: {

@@ -1,5 +1,5 @@
 export default async function getUserProfile(token: string) {
-  const baseUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
   const response = await fetch(
     `${baseUrl}/auth/me`,
     {
