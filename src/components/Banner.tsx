@@ -1,64 +1,62 @@
 "use client";
+
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from 'next-auth/react';
 
 export default function Banner() {
-  const covers = [
-    "/img/cover.jpg",
-    "/img/cover2.jpg",
-    "/img/cover3.jpg",
-    "/img/cover4.jpg",
-  ];
- 
-  const [index, setIndex] = useState(0);
   const router = useRouter();
-  const { data: session } = useSession();
-  const handleBannerClick = () => {
-    setIndex((prev) => (prev + 1) % covers.length);
-  };
- 
+
   return (
-    <div
-      className="block m-0 w-full h-[80vh] relative overflow-hidden group cursor-pointer"
-      onClick={handleBannerClick}
+    <div 
+        className="relative w-full h-[100vh] bg-[#111111] overflow-hidden flex items-center px-6 md:px-20"
+        onClick={() => router.push("/provider")}
     >
-      <Image
-        src={covers[index]}
-        alt="Banner Cover"
-        fill={true}
-        className="object-cover object-center transition-transform duration-700 ease-in-out group-hover:scale-105"
+      {/* Background Image with Overlay */}
+      <Image 
+        src="/img/cover.jpg" 
+        alt="Premium Rental Car" 
+        fill
+        className="object-cover opacity-60 mix-blend-luminosity grayscale hover:grayscale-0 transition-all duration-1000"
         priority
       />
       
-      {/* Gradient overlay for text legibility and premium feel */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10 z-10 transition-opacity duration-300" />
-      
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-white mt-10 pointer-events-none px-4">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight drop-shadow-2xl mb-4 animate-fade-in-up text-center">
-          Your Rental <span className="text-cyan-400">Partner</span>
-        </h1>
-        <h3 className="text-xl md:text-2xl font-light text-gray-200 drop-shadow-lg text-center opacity-90 delay-100 animate-fade-in-up">
-          Find Your Perfect Car for Every Journey
-        </h3>
+      {/* Dynamic Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent z-10" />
+
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col md:flex-row items-end md:items-center justify-between w-full h-full pt-32 pb-20">
+        
+        <div className="flex flex-col gap-10 max-w-4xl animate-in fade-in slide-in-from-left-8 duration-1000">
+            <div className="flex flex-col gap-0 md:gap-2">
+                <p className="text-[#FFD600] text-sm md:text-base font-black tracking-[0.5em] uppercase">Drive your journey</p>
+                <h1 className="text-white text-6xl md:text-9xl font-black italic tracking-tighter leading-[0.85] uppercase">
+                    Rental <br /> <span className="text-[#FFD600]">Cars</span>
+                </h1>
+            </div>
+
+            <div className="flex flex-col gap-6 max-w-md">
+                <p className="text-stone-300 text-sm md:text-base font-bold leading-relaxed">
+                    Experience premium mobility with our curated selection of vehicles from top-tier providers.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <Link href="/provider" className="bg-[#FFD600] text-[#111111] px-10 py-5 text-sm font-black uppercase tracking-widest rounded-full hover:bg-white transition-all text-center shadow-2xl shadow-yellow-600/20">
+                        Browse Cars
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+        {/* Floating Abstract Element */}
+        <div className="hidden lg:flex flex-col items-end gap-1 px-4 border-r-2 border-[#FFD600] animate-in fade-in zoom-in duration-1000 delay-500">
+            <span className="text-white text-[10px] font-black uppercase tracking-widest opacity-40">Ratatouille Systems</span>
+            <span className="text-[#FFD600] text-3xl font-black italic tracking-tighter">EST. 2026</span>
+        </div>
       </div>
 
-      <button
-        className="bg-white/95 backdrop-blur-sm text-cyan-800 font-bold py-3 px-8 rounded-full shadow-xl z-30 absolute bottom-12 right-12 hover:bg-cyan-600 hover:text-white hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
-        onClick={(e) => {
-          e.stopPropagation();
-          router.push("/provider");
-        }}
-      >
-        Select Provider
-      </button>
-
-      {session ? (
-        <div className="z-30 absolute top-6 right-10 font-medium text-md md:text-lg text-white bg-black/30 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/10 shadow-xl overflow-hidden group-hover:bg-black/50 transition-colors">
-          <span className="opacity-80">Welcome,</span> <span className="font-bold">{session.user?.name}</span>
-        </div>
-      ) : null}
+      {/* Aesthetic Bottom Bar */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#FFD600] to-transparent z-30 opacity-50" />
     </div>
   );
 }

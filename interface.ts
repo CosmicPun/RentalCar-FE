@@ -1,4 +1,4 @@
-export interface UserItem {
+export interface User {
   _id: string;
   name: string;
   email: string;
@@ -7,9 +7,25 @@ export interface UserItem {
   createdAt: string;
 }
 
-export interface ProviderItem {
+export interface Car {
   _id: string;
-  id: string;
+  licensePlate: string;
+  brand: string;
+  model: string;
+  year: number;
+  color: string;
+  transmission: 'Automatic' | 'Manual';
+  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
+  available: boolean;
+  provider: Provider;
+  picture: string;
+  rentPrice: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Provider {
+  _id: string;
   name: string;
   address: string;
   district: string;
@@ -19,67 +35,29 @@ export interface ProviderItem {
   region: string;
   picture: string;
   dailyrate: number;
+  cars?: Car[];
 }
 
-export interface ProviderJson {
-  success: boolean;
-  count: number;
-  pagination: Object;
-  data: ProviderItem[];
-}
-
-export interface SingleProviderJson {
-  success: boolean;
-  data: ProviderItem;
-}
-
-export interface CarItem {
-  _id: string;
-  id: string;
-  licensePlate: string;
-  brand: string;
-  model: string;
-  year: number;
-  color: string;
-  transmission: 'Automatic' | 'Manual';
-  fuelType: 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
-  available: boolean;
-  provider: string | ProviderItem;
-  rentPrice: number;
-}
-
-export interface CarJson {
-  success: boolean;
-  count: number;
-  pagination: Object;
-  data: CarItem[];
-}
-
-export interface SingleCarJson {
-  success: boolean;
-  data: CarItem;
-}
-
-export interface BookingItem {
+export interface Booking {
   _id: string;
   bookingDate: string;
   returnDate: string;
   totalCost: number;
-  user: string | UserItem;
-  car: string | CarItem;
-  provider: string | ProviderItem;
+  user: User;
+  car: {
+    _id: string;
+    licensePlate: string;
+    brand: string;
+    model: string;
+    provider: {
+      _id: string;
+      name: string;
+      address: string;
+      tel: string;
+    };
+  };
+  provider: string;
   createdAt: string;
-}
-
-export interface BookingJson {
-  success: boolean;
-  count: number;
-  data: BookingItem[];
-}
-
-export interface SingleBookingJson {
-  success: boolean;
-  data: BookingItem;
 }
 
 export interface LocalBookingItem {
@@ -87,4 +65,18 @@ export interface LocalBookingItem {
   tel: string;
   provider: string;
   bookDate: string;
+}
+
+
+// Responses
+export interface ResponseList<T> {
+  success: boolean;
+  count: number;
+  pagination?: { next?: { page: number; limit: number }; prev?: { page: number; limit: number } };
+  data: T[];
+}
+
+export interface ResponseSingle<T> {
+  success: boolean;
+  data: T;
 }

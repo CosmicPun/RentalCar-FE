@@ -1,7 +1,7 @@
 "use client";
 import { useReducer } from "react";
 import Link from "next/link";
-import Card from "./Card";
+import ProviderCard from "./ProviderCard";
 
 // Mock Data for Demonstration Only
 const mockProviderRepo = [
@@ -50,12 +50,9 @@ export default function CardPanel() {
             key={providerItem.pid}
             href={`/provider/${providerItem.pid}`}
           >
-            <Card
+            <ProviderCard
               providerName={providerItem.name}
               imgSrc={providerItem.image}
-              onRatingChange={(rating) =>
-                handleRatingChange(providerItem.name, rating)
-              }
             />
           </Link>
         ))}

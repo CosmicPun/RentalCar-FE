@@ -1,51 +1,80 @@
 'use client';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@/redux/store';
-import { removeBooking } from '@/redux/features/bookSlice';
-import { Button } from '@mui/material';
+import { useState } from 'react';
+import { Booking } from '@/../interface';
+import { updateBooking, deleteBooking } from '@/libs/bookingService';
+import { useSession } from 'next-auth/react';
+import BookingCard from './BookingCard';
+import BookingDialog from './BookingDialog';
+import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 
-export default function BookingList() {
-  const bookItems = useSelector((state: RootState) => {
-    return state.bookSlice?.bookItems || state.book?.bookItems || [];
-  });
-  
-  const dispatch = useDispatch<AppDispatch>();
+export default function BookingList({ initialBookings, onRefresh }: { initialBookings: Booking[], onRefresh: () => void }) {
+  const { data: session } = useSession();
+  const token = session?.user?.token;
 
-  if (bookItems.length === 0) {
-    return <div className="text-center text-xl mt-10 text-gray-500">No Car Renting</div>;
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [bookingToDelete, setBookingToDelete] = useState<Booking | null>(null);
+
+  const handleUpdate = async (payload: { bookingDate: string; returnDate: string }) => {
+    if (!token || !editingBooking) return;
+    try {
+      await updateBooking(token, editingBooking._id, payload.bookingDate, payload.returnDate);
+      setEditingBooking(null);
+      onRefresh();
+    } catch (err: any) {
+      alert(err.message || "Failed to update booking");
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!token || !bookingToDelete) return;
+    try {
+      await deleteBooking(token, bookingToDelete._id);
+      setBookingToDelete(null);
+      onRefresh();
+    } catch (err: any) {
+      alert(err.message || "Failed to delete booking");
+    }
+  };
+
+  if (initialBookings.length === 0) {
+    return (
+      <div className="py-20 text-center w-full">
+        <p className="text-stone-400 italic text-lg">No car bookings found in your schedule.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 mt-10">
-      {bookItems.map((item: any, index: number) => (
-        <div key={index} className="bg-slate-100 shadow-md rounded-md px-6 py-4 w-full max-w-md border border-gray-200">
-          <h2 className="text-lg font-bold mb-2 text-cyan-800">Booking {index + 1}</h2>
-          
-          <div className="text-sm mb-1 text-gray-700">
-            <strong>Name:</strong> {item.nameLastname || item.name}
-          </div>
-          <div className="text-sm mb-1 text-gray-700">
-            <strong>Contact Number:</strong> {item.tel}
-          </div>
-          <div className="text-sm mb-1 text-gray-700">
-            <strong>Provider:</strong> {item.provider}
-          </div>
-          <div className="text-sm mb-3 text-gray-700">
-            <strong>Date:</strong> {item.bookDate}
-          </div>
-          
-          <Button 
-            variant="contained" 
-            color="error" 
-            fullWidth
-            onClick={() => dispatch(removeBooking(item))}
-            className="bg-red-600 hover:bg-red-700"
-          >
-            Cancel Renting
-          </Button>
-        </div>
+    <div className="flex flex-col items-center gap-6 w-full max-w-4xl pb-10">
+      {initialBookings.map((booking) => (
+        <BookingCard 
+          key={booking._id} 
+          booking={booking}
+          onEdit={() => setEditingBooking(booking)}
+          onDelete={() => setBookingToDelete(booking)}
+        />
       ))}
+
+      {/* Editing Dialog */}
+      <BookingDialog 
+        open={!!editingBooking}
+        onClose={() => setEditingBooking(null)}
+        onSave={handleUpdate}
+        initialData={editingBooking}
+      />
+
+      {/* Deleting Confirmation */}
+      {bookingToDelete && (
+        <ConfirmDeleteDialog 
+          open={!!bookingToDelete}
+          title="Cancel Booking"
+          description="Are you sure you want to cancel this booking? This action cannot be undone."
+          onConfirm={handleDeleteConfirm}
+          onClose={() => setBookingToDelete(null)}
+        />
+      )}
     </div>
   );
 }
+

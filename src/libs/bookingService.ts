@@ -1,7 +1,7 @@
-import { BookingJson, SingleBookingJson } from "@/../interface";
+import { Booking, ResponseList, ResponseSingle } from "@/../interface";
 import { baseUrl } from '../config/api';
 
-export async function getBookings(token: string): Promise<BookingJson> {
+export async function getBookings(token: string): Promise<ResponseList<Booking>> {
   const response = await fetch(`${baseUrl}/bookings`, {
     method: "GET",
     headers: {
@@ -9,11 +9,14 @@ export async function getBookings(token: string): Promise<BookingJson> {
     },
   });
 
-  if (!response.ok) throw new Error("Failed to fetch bookings");
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to fetch bookings");
+  }
   return await response.json();
 }
 
-export async function getBooking(token: string, id: string): Promise<SingleBookingJson> {
+export async function getBooking(token: string, id: string): Promise<ResponseSingle<Booking>> {
   const response = await fetch(`${baseUrl}/bookings/${id}`, {
     method: "GET",
     headers: {
@@ -21,21 +24,28 @@ export async function getBooking(token: string, id: string): Promise<SingleBooki
     },
   });
 
-  if (!response.ok) throw new Error("Failed to fetch booking");
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to fetch booking");
+  }
   return await response.json();
 }
 
 export async function addBooking(token: string, carId: string, bookingDate: string, returnDate: string) {
   const response = await fetch(`${baseUrl}/cars/${carId}/bookings`, {
     method: "POST",
-    headers: {
+    headers: {  
       "Content-Type": "application/json",
       authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ bookingDate, returnDate }),
   });
-
-  if (!response.ok) throw new Error("Failed to add booking");
+  console.log(response);
+  console.log(bookingDate, returnDate);
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to add booking");
+  }
   return await response.json();
 }
 
@@ -49,7 +59,10 @@ export async function updateBooking(token: string, id: string, bookingDate?: str
     body: JSON.stringify({ bookingDate, returnDate }),
   });
 
-  if (!response.ok) throw new Error("Failed to update booking");
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to update booking");
+  }
   return await response.json();
 }
 
@@ -61,6 +74,9 @@ export async function deleteBooking(token: string, id: string) {
     },
   });
 
-  if (!response.ok) throw new Error("Failed to delete booking");
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to delete booking");
+  }
   return await response.json();
 }
