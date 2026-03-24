@@ -30,7 +30,7 @@ export default function CarCard({
   onDelete?: () => void;
 }) {
   return (
-    <InteractiveCard contentName={`${brand} ${model}`} className="w-full max-w-[600px] h-auto flex-col sm:flex-row">
+    <InteractiveCard contentName={`${brand} ${model}`} className="w-full h-auto flex-col sm:flex-row shadow-lg">
       <div className="w-full sm:w-[250px] min-h-[200px] relative overflow-hidden flex-shrink-0 bg-stone-100">
         <Image
           src={decodeSafeUrl(imgSrc) || '/img/logo.png'}

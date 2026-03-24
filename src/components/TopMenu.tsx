@@ -3,17 +3,27 @@ import TopMenuItem from "./TopMenuItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import Link from "next/link";
-import { getRoleFromToken } from "@/libs/authService";
+import { getRoleFromToken, getUserProfile } from "@/libs/authService";
 
 import AuthLinks from "./AuthLinks";
 
 export default async function TopMenu() {
     const session = await getServerSession(authOptions);
     let role = null;
-    let name = session?.user?.name || null;
+    let name = null;
     
     if (session?.user?.token) {
-        role = getRoleFromToken(session.user.token as string);
+        const token = session.user.token as string;
+        try {
+            const profileResponse = await getUserProfile(token);
+            name = profileResponse.data.name;
+            role = profileResponse.data.role;
+        } catch (error) {
+            console.error("Failed to fetch profile in TopMenu:", error);
+            // Fallback to session data if profile fetch fails
+            name = session.user.name;
+            role = getRoleFromToken(token);
+        }
     }
 
     return (
@@ -40,7 +50,7 @@ export default async function TopMenu() {
 
             {/* Profile / Auth Section */}
             <div className="flex-none flex items-center gap-6">
-                <AuthLinks session={!!session} name={name} />
+                <AuthLinks session={!!session} name={name} role={role} />
             </div>
         </nav>
     );

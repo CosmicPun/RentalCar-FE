@@ -9,6 +9,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { getProviders } from '@/libs/providerService';
 import { addBooking, getBookings } from '@/libs/bookingService';
+import { getUserProfile } from '@/libs/authService';
 import { Provider, Car } from '@/../interface';
 import { useRouter } from 'next/navigation';
 
@@ -36,17 +37,28 @@ export default function BookingPage() {
         setProviders(providersRes.data);
 
         if (token) {
+          // Fetch fresh user profile to get the canonical user ID from the backend
+          const profileRes = await getUserProfile(token);
+          const currentUserId = profileRes.data._id;
+          
           const bookingsRes = await getBookings(token);
-          if (bookingsRes.count >= 3) {
+          
+          // Filter to only include bookings belonging to the current user
+          const ownBookings = bookingsRes.data.filter(b => {
+            const bookingUserId = typeof b.user === 'string' ? b.user : (b.user as any)?._id;
+            return bookingUserId === currentUserId;
+          });
+          
+          if (ownBookings.length >= 3) {
             setIsLimitReached(true);
           }
         }
       } catch (e) {
-        console.error("Failed to load providers", e);
+        console.error("Failed to load initial booking data", e);
       }
     };
-    fetchInitialData();
-  }, [token]);
+    if (session) fetchInitialData();
+  }, [token, session]);
 
   useEffect(() => {
     if (selectedProviderId) {
@@ -66,8 +78,13 @@ export default function BookingPage() {
       return setError("All fields are required");
     }
 
+    // Date Validation: Return date cannot be before booking date
+    if (returnDate.isBefore(bookingDate, 'day')) {
+      return setError("Return date cannot be before booking date");
+    }
+
     if (isLimitReached) {
-      return setError("You cannot book more than 3 cars.");
+      return setError("You have reached your maximum limit of 3 bookings.");
     }
 
     setIsLoading(true);

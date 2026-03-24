@@ -60,7 +60,7 @@ export default function LoginPage() {
 
           <div className="flex flex-col gap-2">
             <label className="text-[#111111] text-[10px] font-black uppercase tracking-[0.2em] ml-1">
-              Email Address
+              Email
             </label>
             <input
               type="email"

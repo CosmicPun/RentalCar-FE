@@ -35,6 +35,11 @@ export default function BookingDialog({
   const handleSave = async () => {
     if (!bookingDate || !returnDate) return alert('Dates are required');
     
+    // Date Validation: Return date cannot be before booking date
+    if (returnDate.isBefore(bookingDate, 'day')) {
+      return alert("Return date cannot be before booking date");
+    }
+
     setIsSubmitting(true);
     try {
       await onSave({ 

@@ -6,15 +6,16 @@ import Link from "next/link";
 interface AuthLinksProps {
     session: boolean;
     name?: string | null;
+    role?: string | null;
 }
 
-export default function AuthLinks({ session, name }: AuthLinksProps) {
+export default function AuthLinks({ session, name, role }: AuthLinksProps) {
     if (session) {
         return (
             <div className="flex items-center gap-4">
                 <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-black text-[#FFD600] uppercase tracking-widest leading-none mb-1">Authenticated</span>
-                    <span className="text-xs font-bold text-[#111111]">{name}</span>
+                    <span className="text-[10px] font-black text-[#FFD600] uppercase tracking-[0.1em] leading-none mb-0.5">{role || 'User'}</span>
+                    <span className="text-sm font-black text-[#111111] leading-none">Welcome {name}</span>
                 </div>
                 <button 
                     onClick={() => signOut({ callbackUrl: '/' })}

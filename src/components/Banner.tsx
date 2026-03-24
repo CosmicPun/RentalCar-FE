@@ -1,25 +1,40 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Banner() {
-  const router = useRouter();
+  const images = ["/img/cover.jpg", "/img/cover1.jpg", "/img/cover2.jpg"];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length]);
 
   return (
     <div 
         className="relative w-full h-[100vh] bg-[#111111] overflow-hidden flex items-center px-6 md:px-20"
-        onClick={() => router.push("/provider")}
     >
-      {/* Background Image with Overlay */}
-      <Image 
-        src="/img/cover.jpg" 
-        alt="Premium Rental Car" 
-        fill
-        className="object-cover opacity-60 mix-blend-luminosity grayscale hover:grayscale-0 transition-all duration-1000"
-        priority
-      />
+      {/* Background Carousel */}
+      {images.map((src, index) => (
+        <div 
+          key={src}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-60' : 'opacity-0'}`}
+        >
+          <Image 
+            src={src} 
+            alt={`Slide ${index}`} 
+            fill
+            className="object-cover mix-blend-luminosity grayscale"
+            priority={index === 0}
+          />
+        </div>
+      ))}
       
       {/* Dynamic Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent z-10" />

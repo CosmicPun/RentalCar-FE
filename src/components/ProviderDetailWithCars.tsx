@@ -136,7 +136,7 @@ export default function ProviderDetailWithCars({ initialProvider }: { initialPro
             </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {provider.cars && provider.cars.length > 0 ? (
             provider.cars.map((car) => (
               <CarCard 
